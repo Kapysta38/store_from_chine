@@ -1,40 +1,23 @@
 import os
 from dotenv import load_dotenv, find_dotenv
 
-dotenv_path = os.path.join('../local_data/.env')
+dotenv_path = os.path.join('../.env')
 if os.path.exists(dotenv_path):
     load_dotenv(dotenv_path)
 else:
     load_dotenv(find_dotenv('../local_data/.env.dev'))
 
-import asyncio
-# import aioschedule
 from aiogram import executor
-from extra_aiogram.settings import LOG_PATH, DEBUG
-from extra_aiogram.app import dp
-import extra_logging as ex_log
+from bot.settings import DEBUG
+from bot.app import dp
 
-from bot.message_handlers import LIST_HANDLERS
-from bot.admin_message_handlers import LIST_ADMIN_HANDLERS
-from bot.callbacks import LIST_CALLBACKS
-from bot.loops import LIST_LOOPS
+from bot.callbacks import LIST_CALLBACKS, LIST_HANDLERS
 from bot.utils import get_reg_func
-
-log = ex_log.Logging('run', LOG_PATH, max_bytes=ex_log.mb * 5).get_log
-
-
-# async def scheduler():
-#     for loop in LIST_LOOPS:
-#         loop().start()
-#     while True:
-#         await aioschedule.run_pending()
-#         await asyncio.sleep(1)
+from bot.config.logging_config import logger as log
 
 
 async def on_startup(_):
     log.info('Start init handlers')
-
-    LIST_HANDLERS.extend(LIST_ADMIN_HANDLERS)
 
     for handler in LIST_HANDLERS:
         if handler.command is not None:
@@ -56,10 +39,6 @@ async def on_startup(_):
     for callback in LIST_CALLBACKS:
         dp.register_callback_query_handler(callback.callback, callback.custom_filters, state=callback.state)
     log.info('End init callbacks')
-    #
-    # log.info('Start init loops')
-    # asyncio.create_task(scheduler())
-    # log.info('End init loops')
 
 
 if __name__ == '__main__':

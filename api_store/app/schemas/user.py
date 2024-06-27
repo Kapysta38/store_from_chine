@@ -14,8 +14,6 @@ class UserBase(BaseModel):
 class UserCreate(UserBase):
     user_id: Optional[int] = None
     created_at: Optional[datetime] = None
-    full_name: str = None
-    address: str = None
 
 
 class UserUpdate(UserBase):
