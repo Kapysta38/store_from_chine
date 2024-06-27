@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Optional, Union
 from datetime import datetime
 
 from pydantic import BaseModel
@@ -6,8 +6,8 @@ from pydantic import BaseModel
 
 class UserBase(BaseModel):
     user_id: int
-    full_name: str
-    address: str
+    full_name: Union[str, None]
+    address: Union[str, None]
     tg_id: int
 
 
@@ -20,8 +20,8 @@ class UserUpdate(UserBase):
     user_id: Optional[int] = None
     created_at: Optional[datetime] = None
     tg_id: Optional[int] = None
-    address: Optional[str] = None
-    full_name: Optional[str] = None
+    address: Union[str, None] = None
+    full_name: Union[str, None] = None
 
 
 class UserInDBBase(UserBase):
