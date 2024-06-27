@@ -24,8 +24,14 @@ async def send_error(tg_id, ex, tb, title):
     """
     client = APIClient()
     if not DEBUG:
-        admin_chat = get_users_in_chat_role(client)
-        fio = client.get_filter_users(tg_id=tg_id)
+        admin_chat = await get_users_in_chat_role(client)
+        if admin_chat:
+            admin_chat = admin_chat[0]
+        fio = await client.get_filter_users(tg_id=tg_id)
+        if fio:
+            fio = fio[0]['full_name']
+        else:
+            fio = '-'
 
         menu = Menu().get_menu('error')
         if tg_id:

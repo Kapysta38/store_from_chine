@@ -7,13 +7,14 @@ from ..app import bot, dp
 from ..dependence import error
 from ..settings import PARSE_MODE
 
+
 class StartHandler(BaseHandler):
     command = ['start', 'restart']
     callback_data = 'main_menu'
     title = 'Вызов меню'
 
     @error(title=title)
-    async def start_handler(self, message: Message):
+    async def start_handler(self, message: Message, state: FSMContext):
         """
         Этот обработчик будет вызван, когда пользователь отправит команду `/start`.
         Краткая информация о том, как начать работу с ботом.
@@ -21,6 +22,7 @@ class StartHandler(BaseHandler):
         """
         chat_id = message.chat.id
         if chat_id >= 0:
+            raise Exception('error')
             return await self.handle(message.chat.id)
         await bot.send_message(message.chat.id,
                                f"<b>Привет, <i>{message.from_user.username}</i>\n</b>"
@@ -28,5 +30,5 @@ class StartHandler(BaseHandler):
                                parse_mode=PARSE_MODE)
 
     @staticmethod
-    async def run_handler(message):
-        await StartHandler().start_handler(message)
+    async def run_handler(message, state):
+        await StartHandler().start_handler(message, state)

@@ -7,8 +7,11 @@ class APIClient:
     def __init__(self, base_url: str = BASE_URL_API):
         self.base_url = base_url
 
-    async def _request(self, method: str, endpoint: str, data: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
+    async def _request(self, method: str, endpoint: str, data: Optional[Dict[str, Any]] = None,
+                       params: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
         url = f"{self.base_url}{endpoint}"
+        if params is not None:
+            url += "?" + "&".join(list(map(lambda x: f"{x[0]}={x[1]}", params.items())))
         async with httpx.AsyncClient() as client:
             response = await client.request(method, url, json=data)
             response.raise_for_status()
@@ -20,10 +23,10 @@ class APIClient:
             "address": address,
             "tg_id": tg_id
         }
-        return await self._request("POST", "/users/", data)
+        return await self._request("POST", "/user/", data)
 
     async def get_user(self, user_id: int) -> Dict[str, Any]:
-        return await self._request("GET", f"/users/{user_id}")
+        return await self._request("GET", f"/user/{user_id}")
 
     async def update_user(self, user_id: int, full_name: Optional[str] = None, address: Optional[str] = None,
                           tg_id: Optional[int] = None) -> Dict[str, Any]:
@@ -34,10 +37,10 @@ class APIClient:
             data["address"] = address
         if tg_id is not None:
             data["tg_id"] = tg_id
-        return await self._request("PUT", f"/users/{user_id}", data)
+        return await self._request("PUT", f"/user/{user_id}", data)
 
     async def delete_user(self, user_id: int) -> Dict[str, Any]:
-        return await self._request("DELETE", f"/users/{user_id}")
+        return await self._request("DELETE", f"/user/{user_id}")
 
     async def get_filter_users(self, full_name: Optional[str] = None, address: Optional[str] = None,
                                tg_id: Optional[int] = None) -> Dict[str, Any]:
@@ -48,7 +51,7 @@ class APIClient:
             params["address"] = address
         if tg_id is not None:
             params["tg_id"] = tg_id
-        return await self._request("GET", "/users/", params)
+        return await self._request("GET", "/user/", params=params)
 
     async def create_order(self, user_id: int, product_url: str, order_status: str = 0) -> Dict[str, Any]:
         data = {
@@ -56,10 +59,10 @@ class APIClient:
             "product_url": product_url,
             "order_status": order_status
         }
-        return await self._request("POST", "/orders/", data)
+        return await self._request("POST", "/order/", data)
 
     async def get_order(self, order_id: int) -> Dict[str, Any]:
-        return await self._request("GET", f"/orders/{order_id}")
+        return await self._request("GET", f"/order/{order_id}")
 
     async def update_order(self, order_id: int, user_id: Optional[int] = None, product_url: Optional[str] = None,
                            order_status: Optional[str] = None) -> Dict[str, Any]:
@@ -70,10 +73,10 @@ class APIClient:
             data["product_url"] = product_url
         if order_status is not None:
             data["order_status"] = order_status
-        return await self._request("PUT", f"/orders/{order_id}", data)
+        return await self._request("PUT", f"/order/{order_id}", data)
 
     async def delete_order(self, order_id: int) -> Dict[str, Any]:
-        return await self._request("DELETE", f"/orders/{order_id}")
+        return await self._request("DELETE", f"/order/{order_id}")
 
     async def get_filter_orders(self, user_id: Optional[int] = None, product_url: Optional[str] = None,
                                 order_status: Optional[str] = None, today: bool = False) -> Dict[str, Any]:
@@ -86,41 +89,41 @@ class APIClient:
             params["order_status"] = order_status
         if today:
             params["today"] = today
-        return await self._request("GET", "/orders/", params)
+        return await self._request("GET", "/order/", params=params)
 
     async def create_role(self, role_name: str) -> Dict[str, Any]:
         data = {
             "role_name": role_name
         }
-        return await self._request("POST", "/roles/", data)
+        return await self._request("POST", "/role/", data)
 
     async def get_role(self, role_id: int) -> Dict[str, Any]:
-        return await self._request("GET", f"/roles/{role_id}")
+        return await self._request("GET", f"/role/{role_id}")
 
     async def update_role(self, role_id: int, role_name: Optional[str] = None) -> Dict[str, Any]:
         data = {}
         if role_name is not None:
             data["role_name"] = role_name
-        return await self._request("PUT", f"/roles/{role_id}", data)
+        return await self._request("PUT", f"/role/{role_id}", data)
 
     async def delete_role(self, role_id: int) -> Dict[str, Any]:
-        return await self._request("DELETE", f"/roles/{role_id}")
+        return await self._request("DELETE", f"/role/{role_id}")
 
     async def get_filter_roles(self, role_name: Optional[str] = None) -> Dict[str, Any]:
         params = {}
         if role_name is not None:
             params["role_name"] = role_name
-        return await self._request("GET", "/roles/", params)
+        return await self._request("GET", "/role/", params=params)
 
     async def assign_role_to_user(self, user_id: int, role_id: int) -> Dict[str, Any]:
         data = {
             "user_id": user_id,
             "role_id": role_id
         }
-        return await self._request("POST", "/user_roles/", data)
+        return await self._request("POST", "/user_role/", data)
 
     async def get_user_roles(self, user_id: int) -> Dict[str, Any]:
-        return await self._request("GET", f"/user_roles/{user_id}")
+        return await self._request("GET", f"/user_role/{user_id}")
 
     async def get_filter_user_roles(self, user_id: Optional[int] = None, role_id: Optional[int] = None) -> Dict[
         str, Any]:
@@ -129,10 +132,10 @@ class APIClient:
             params["user_id"] = user_id
         if role_id is not None:
             params["role_id"] = role_id
-        return await self._request("GET", "/user_roles/", params)
+        return await self._request("GET", "/user_role/", params=params)
 
     async def remove_role_from_user(self, user_id: int, role_id: int) -> Dict[str, Any]:
-        return await self._request("DELETE", f"/user_roles/{user_id}/{role_id}")
+        return await self._request("DELETE", f"/user_role/{user_id}/{role_id}")
 
     async def create_item(self, name: str, address: Optional[str] = None, price: Optional[float] = None,
                           tags: Optional[Set[str]] = None, start_datetime: Optional[str] = None) -> Dict[str, Any]:
@@ -178,4 +181,4 @@ class APIClient:
             params["price"] = price
         if today:
             params["today"] = today
-        return await self._request("GET", "/items/", params)
+        return await self._request("GET", "/items/", params=params)
