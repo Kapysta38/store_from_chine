@@ -1,9 +1,8 @@
 from aiogram.dispatcher import FSMContext
-from aiogram.types import Message, ParseMode, ReplyKeyboardMarkup
-from aiogram.utils.exceptions import MessageNotModified, BotBlocked
+from aiogram.types import Message
 
 from .base import BaseHandler
-from ..app import bot, dp
+from ..app import bot
 from ..dependence import error
 from ..settings import PARSE_MODE
 
