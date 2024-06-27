@@ -22,7 +22,6 @@ class StartHandler(BaseHandler):
         """
         chat_id = message.chat.id
         if chat_id >= 0:
-            raise Exception('error')
             return await self.handle(message.chat.id)
         await bot.send_message(message.chat.id,
                                f"<b>Привет, <i>{message.from_user.username}</i>\n</b>"
