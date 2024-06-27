@@ -1,6 +1,6 @@
 from .start import StartHandler
 from .register import RegisterHandler
 from .info import InfoHandler
-from .order import OrderHandler
+from .order import OrderHandler, AcceptOrderHandler, DeclineOrderHandler
 
-LIST_HANDLERS = [StartHandler, RegisterHandler, InfoHandler, OrderHandler]
+LIST_HANDLERS = [StartHandler, RegisterHandler, InfoHandler, OrderHandler, AcceptOrderHandler, DeclineOrderHandler]

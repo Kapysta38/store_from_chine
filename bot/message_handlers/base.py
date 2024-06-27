@@ -5,6 +5,7 @@ from aiogram.utils.exceptions import MessageNotModified, BotBlocked
 from ..app import bot
 from ..menu import Menu
 from ..settings import PARSE_MODE
+from ..dependence import error
 
 
 class BaseHandler:
@@ -13,6 +14,7 @@ class BaseHandler:
     state = None
     content_types = None
     text_startswith = None
+    title = "Базовые обработчик"
 
     def __init__(self):
         self.bot = bot
@@ -42,6 +44,7 @@ class BaseHandler:
         except MessageNotModified:
             return
 
+    @error(title=title)
     async def run(self, callback: CallbackQuery, state: FSMContext, data: str = None):
         chat_id, message_id = callback.from_user.id, callback.message.message_id
         template, status = await self.get_template_and_status(callback, state, data=data)

@@ -62,10 +62,10 @@ class APIClient:
         return await self._request("POST", "/order/", data)
 
     async def get_order(self, order_id: int) -> Dict[str, Any]:
-        return await self._request("GET", f"/order/{order_id}")
+        return await self._request(" GET", f"/order/{order_id}")
 
     async def update_order(self, order_id: int, user_id: Optional[int] = None, product_url: Optional[str] = None,
-                           order_status: Optional[str] = None) -> Dict[str, Any]:
+                           order_status: Optional[int] = None) -> Dict[str, Any]:
         data = {}
         if user_id is not None:
             data["user_id"] = user_id
