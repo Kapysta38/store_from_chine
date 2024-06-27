@@ -12,6 +12,7 @@ class User(Base):
     address = Column(String(255), nullable=True)
     tg_id = Column(BigInteger, nullable=False)
     created_at = Column(DateTime, default=func.now())
+    updated_at = Column(DateTime, default=func.now(), onupdate=func.now())
 
     orders = relationship("Order", back_populates="user")
     user_roles = relationship("UserRole", back_populates="user")

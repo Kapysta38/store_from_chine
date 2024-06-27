@@ -9,7 +9,7 @@ from ..settings import PARSE_MODE
 
 class StartHandler(BaseHandler):
     command = ['start', 'restart']
-    callback_data = 'main_menu'
+    callback_data = 'start'
     title = 'Вызов меню'
 
     @error(title=title)
