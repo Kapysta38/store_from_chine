@@ -14,11 +14,18 @@ class OrderBase(BaseModel):
 
 
 class OrderCreate(OrderBase):
-    pass
+    order_id: Optional[int] = None
+    created_at: Optional[datetime] = None
+    updated_at: Optional[datetime] = None
 
 
 class OrderUpdate(OrderBase):
-    pass
+    user_id: Optional[int] = None
+    product_url: Optional[str] = None
+    order_id: Optional[int] = None
+    order_status: StatusOrder = None
+    created_at: Optional[datetime] = None
+    updated_at: Optional[datetime] = None
 
 
 class OrderInDBBase(OrderBase):

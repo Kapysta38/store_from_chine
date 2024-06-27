@@ -12,16 +12,16 @@ class RoleBase(BaseModel):
 
 
 class RoleCreate(RoleBase):
-    pass
+    role_id: Optional[int] = None
 
 
 class RoleUpdate(RoleBase):
-    pass
+    role_name: Roles = None
+    role_id: Optional[int] = None
 
 
 class RoleInDBBase(RoleBase):
     role_id: Optional[int] = None
-    created_at: Optional[datetime] = None
 
     class Config:
         from_attributes = True

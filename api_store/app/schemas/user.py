@@ -12,11 +12,16 @@ class UserBase(BaseModel):
 
 
 class UserCreate(UserBase):
-    pass
+    user_id: Optional[int] = None
+    created_at: Optional[datetime] = None
 
 
 class UserUpdate(UserBase):
-    pass
+    user_id: Optional[int] = None
+    created_at: Optional[datetime] = None
+    tg_id: Optional[int] = None
+    address: Optional[str] = None
+    full_name: Optional[str] = None
 
 
 class UserInDBBase(UserBase):

@@ -1,4 +1,4 @@
-from typing import List, Any
+from typing import List, Any, Optional
 
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
@@ -11,12 +11,15 @@ router = APIRouter()
 
 @router.get("/", response_model=List[schemas.UserInDBBase])
 def get_users(
-        db: Session = Depends(deps.get_db)
+        db: Session = Depends(deps.get_db),
+        full_name: Optional[str] = None,
+        address: Optional[str] = None,
+        tg_id: Optional[int] = None,
 ) -> list[models.User]:
     """
     Get all users.
     """
-    return crud.user.get_multi(db)
+    return crud.user.get_filter(db, full_name=full_name, address=address, tg_id=tg_id)
 
 
 @router.get("/{id_user}", response_model=schemas.UserInDBBase)

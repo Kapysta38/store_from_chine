@@ -1,4 +1,4 @@
-from typing import List, Any
+from typing import List, Any, Optional
 
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
@@ -11,12 +11,17 @@ router = APIRouter()
 
 @router.get("/", response_model=List[schemas.OrderInDBBase])
 def get_orders(
-        db: Session = Depends(deps.get_db)
+        db: Session = Depends(deps.get_db),
+        user_id: Optional[int] = None,
+        product_url: Optional[str] = None,
+        order_status: Optional[str] = None,
+        today: bool = False,
 ) -> list[models.Order]:
     """
     Get all orders.
     """
-    return crud.order.get_multi(db)
+    return crud.order.get_filter(db, user_id=user_id, product_url=product_url, order_status=order_status,
+                                 today=today)
 
 
 @router.get("/{id_order}", response_model=schemas.OrderInDBBase)

@@ -1,4 +1,4 @@
-from typing import List, Any
+from typing import List, Any, Optional
 
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
@@ -11,27 +11,14 @@ router = APIRouter()
 
 @router.get("/", response_model=List[schemas.UserRoleInDBBase])
 def get_user_roles(
-        db: Session = Depends(deps.get_db)
+        db: Session = Depends(deps.get_db),
+        user_id: Optional[int] = None,
+        role_id: Optional[int] = None,
 ) -> list[models.UserRole]:
     """
     Get all user_roles.
     """
-    return crud.user_role.get_multi(db)
-
-
-@router.get("/{id_user_role}", response_model=schemas.UserRoleInDBBase)
-def get_user_role(
-        db: Session = Depends(deps.get_db),
-        *,
-        id_user_role: int
-) -> models.UserRole:
-    """
-    Get once user_role.
-    """
-    user_role = crud.user_role.get(db=db, id=id_user_role)
-    if not user_role:
-        raise HTTPException(status_code=404, detail="user_role not found")
-    return user_role
+    return crud.user_role.get_filter(db, user_id=user_id, role_id=role_id)
 
 
 @router.post("/", response_model=schemas.UserRoleCreate)
@@ -47,18 +34,14 @@ def create_user_role(
     return user_role
 
 
-@router.put("/{id_user_role}", response_model=schemas.UserRoleUpdate)
-def update_user_role(
+@router.delete("/{id_user_role}", response_model=schemas.UserRoleBase)
+def delete_user_role(
         *,
         db: Session = Depends(deps.get_db),
         id_user_role: int,
-        user_role_in: schemas.UserRoleUpdate
 ) -> Any:
-    """
-    Update an user_role.
-    """
     user_role = crud.user_role.get(db=db, id=id_user_role)
     if not user_role:
         raise HTTPException(status_code=404, detail="user_role not found")
-    upd_user_role = crud.user_role.update(db=db, db_obj=user_role, obj_in=user_role_in)
+    upd_user_role = crud.user_role.remove(db=db, id=id_user_role)
     return upd_user_role

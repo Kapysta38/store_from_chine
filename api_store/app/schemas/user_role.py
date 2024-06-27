@@ -10,11 +10,12 @@ class UserRoleBase(BaseModel):
 
 
 class UserRoleCreate(UserRoleBase):
-    pass
+    created_at: Optional[datetime] = None
 
 
 class UserRoleUpdate(UserRoleBase):
-    pass
+    user_id: int = None
+    role_id: int = None
 
 
 class UserRoleInDBBase(UserRoleBase):
