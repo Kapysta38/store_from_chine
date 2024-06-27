@@ -22,7 +22,7 @@ async def on_startup(_):
     for handler in LIST_HANDLERS:
         if handler.command is not None:
             dp.register_message_handler(handler.run_handler, commands=handler.command, state=handler.state)
-        if handler.state is not None:
+        elif handler.state is not None:
             list_func = get_reg_func(handler)
             for func in list_func:
                 if isinstance(handler.state, list):
@@ -33,6 +33,8 @@ async def on_startup(_):
                                             text_startswith=handler.text_startswith,
                                             state=state,
                                             content_types=handler.content_types)
+        elif handler.text_startswith is not None:
+            dp.register_message_handler(handler.run_handler, text_startswith=handler.text_startswith)
     log.info('End init handlers')
 
     log.info('Start init callbacks')
