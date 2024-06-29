@@ -17,6 +17,22 @@ class APIClient:
             response.raise_for_status()
             return response.json()
 
+    async def create_feedback(self, user_id: int, text: str) -> Dict[str, Any]:
+        data = {
+            "user_id": user_id,
+            "text": text
+        }
+        return await self._request("POST", "/feedback/", data)
+
+    async def get_feedback(self, feedback_id: int) -> Dict[str, Any]:
+        return await self._request("POST", f"/feedback/{feedback_id}")
+
+    async def update_feedback(self, feedback_id: int, answer: Optional[str] = None) -> Dict[str, Any]:
+        data = {}
+        if answer is not None:
+            data["answer"] = answer
+        return await self._request("PUT", f"/feedback/{feedback_id}", data)
+
     async def create_user(self, full_name: str, address: str, tg_id: int, username: str) -> Dict[str, Any]:
         data = {
             "full_name": full_name,
