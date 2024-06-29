@@ -17,3 +17,4 @@ class User(Base):
 
     orders = relationship("Order", back_populates="user")
     user_roles = relationship("UserRole", back_populates="user")
+    feedback = relationship("Feedback", back_populates="user")
