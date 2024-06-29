@@ -49,9 +49,11 @@ class RegisterHandler(BaseHandler):
         client = APIClient()
         exist_user = await client.get_filter_users(tg_id=chat_id)
         if not exist_user:
-            await client.create_user(tg_id=chat_id, full_name=full_name, address=address)
+            await client.create_user(tg_id=chat_id, full_name=full_name, address=address,
+                                     username=message.chat.username)
         else:
-            await client.update_user(exist_user[0]['user_id'], full_name=full_name, address=address)
+            await client.update_user(exist_user[0]['user_id'], full_name=full_name, address=address,
+                                     username=message.chat.username)
 
         await self.handle(chat_id, message_id, "success")
 

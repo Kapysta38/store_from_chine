@@ -17,11 +17,12 @@ class APIClient:
             response.raise_for_status()
             return response.json()
 
-    async def create_user(self, full_name: str, address: str, tg_id: int) -> Dict[str, Any]:
+    async def create_user(self, full_name: str, address: str, tg_id: int, username: str) -> Dict[str, Any]:
         data = {
             "full_name": full_name,
             "address": address,
-            "tg_id": tg_id
+            "tg_id": tg_id,
+            "username": username
         }
         return await self._request("POST", "/user/", data)
 
@@ -29,7 +30,7 @@ class APIClient:
         return await self._request("GET", f"/user/{user_id}")
 
     async def update_user(self, user_id: int, full_name: Optional[str] = None, address: Optional[str] = None,
-                          tg_id: Optional[int] = None) -> Dict[str, Any]:
+                          tg_id: Optional[int] = None, username: Optional[str] = None) -> Dict[str, Any]:
         data = {}
         if full_name is not None:
             data["full_name"] = full_name
@@ -37,6 +38,8 @@ class APIClient:
             data["address"] = address
         if tg_id is not None:
             data["tg_id"] = tg_id
+        if username is not None:
+            data["username"] = username
         return await self._request("PUT", f"/user/{user_id}", data)
 
     async def delete_user(self, user_id: int) -> Dict[str, Any]:
