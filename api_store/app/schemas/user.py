@@ -8,6 +8,7 @@ class UserBase(BaseModel):
     user_id: int
     full_name: Union[str, None]
     address: Union[str, None]
+    username: Union[str, None]
     tg_id: int
 
 
@@ -15,6 +16,7 @@ class UserCreate(UserBase):
     user_id: Optional[int] = None
     created_at: Optional[datetime] = None
     updated_at: Optional[datetime] = None
+    username: Union[str, None] = None
 
 
 class UserUpdate(UserBase):
@@ -24,6 +26,7 @@ class UserUpdate(UserBase):
     tg_id: Optional[int] = None
     address: Union[str, None] = None
     full_name: Union[str, None] = None
+    username: Union[str, None] = None
 
 
 class UserInDBBase(UserBase):

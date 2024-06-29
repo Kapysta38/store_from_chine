@@ -11,6 +11,7 @@ class User(Base):
     full_name = Column(String(255), nullable=True)
     address = Column(String(255), nullable=True)
     tg_id = Column(BigInteger, nullable=False)
+    username = Column(String(255), nullable=True)
     created_at = Column(DateTime, default=func.now())
     updated_at = Column(DateTime, default=func.now(), onupdate=func.now())
 
