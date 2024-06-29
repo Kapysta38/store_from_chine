@@ -25,7 +25,7 @@ class APIClient:
         return await self._request("POST", "/feedback/", data)
 
     async def get_feedback(self, feedback_id: int) -> Dict[str, Any]:
-        return await self._request("POST", f"/feedback/{feedback_id}")
+        return await self._request("GET", f"/feedback/{feedback_id}")
 
     async def update_feedback(self, feedback_id: int, answer: Optional[str] = None) -> Dict[str, Any]:
         data = {}

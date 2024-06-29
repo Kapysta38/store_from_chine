@@ -1,5 +1,5 @@
 from aiogram.dispatcher import FSMContext
-from aiogram.types import Message
+from aiogram.types import Message, CallbackQuery
 
 from .base import BaseHandler
 from ..api import APIClient
@@ -59,3 +59,67 @@ class FeedbackHandler(BaseHandler):
     @staticmethod
     async def run_handler(message, state):
         await FeedbackHandler().start_handler(message, state)
+
+
+class FeedbackAnswerHandler(FeedbackHandler):
+    command = None
+    callback_data = 'send_answer'
+    title = 'Ответ обратной связи'
+
+    @error(title=title)
+    async def run(self, callback: CallbackQuery, state: FSMContext, data: str = None):
+        chat_id, message_id = callback.message.chat.id, callback.message.message_id
+        template, status = await self.get_template_and_status(callback, state, data=data)
+        await self.handle(chat_id, message_id, edit_text=template, state=status)
+        await self.set_state(state, chat_id, message_id, data=data)
+
+    @staticmethod
+    async def reg_waiting_for_send_answer(message: Message, state: FSMContext):
+        return await FeedbackAnswerHandler().waiting_for_send_answer(message, state)
+
+    @error(title=title)
+    async def waiting_for_send_answer(self, message: Message, state: FSMContext):
+        chat = message.from_user.id
+
+        user_data = await state.get_data()
+        await state.finish()
+        message_id = user_data['message_id']
+        feedback_id = user_data['feedback_id']
+        from_user_tg_id = user_data['from_user_tg_id']
+
+        if from_user_tg_id != chat:
+            await self.set_state(state, message_id=message_id, data=feedback_id)
+            await state.update_data(from_user_tg_id=from_user_tg_id)
+            return
+
+        text = message.text[:255]
+        await self.bot.delete_message(message.chat.id, message.message_id)
+
+        client = APIClient()
+        feedback = await client.update_feedback(feedback_id, answer=text)
+        user = await client.get_user(feedback['user_id'])
+
+        await self.handle(message.chat.id, message_id, state=True,
+                          edit_text=[feedback['id'], user['full_name'], user['username'], feedback['text'],
+                                     feedback['answer']])
+
+        await self.handle(user['tg_id'], state='user', edit_text=[feedback['id'], feedback['text'], feedback['answer']])
+
+    async def get_template_and_status(self, callback: CallbackQuery, state: FSMContext, data: str = None):
+        if data:
+            await state.finish()
+            await state.update_data(from_user_tg_id=callback.from_user.id)
+
+            client = APIClient()
+            feedback = await client.get_feedback(int(data))
+            user = await client.get_user(feedback['user_id'])
+
+            template = [feedback['id'], user['full_name'], user['username'], feedback['text']]
+            return template, None
+        return None, None
+
+    async def set_state(self, state: FSMContext, chat_id: int = None, message_id: int = None, data=None):
+        if data:
+            user_data = await state.get_data()
+            await self.state.waiting_for_send_answer.set()
+            await state.update_data(message_id=message_id, feedback_id=data, from_user_tg_id=user_data['from_user_tg_id'])
