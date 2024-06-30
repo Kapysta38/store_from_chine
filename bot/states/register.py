@@ -7,3 +7,4 @@ class RegisterState(StatesGroup):
     """
     waiting_for_send_fio = State()
     waiting_for_send_address = State()
+    waiting_for_send_city = State()

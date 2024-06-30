@@ -33,12 +33,13 @@ class APIClient:
             data["answer"] = answer
         return await self._request("PUT", f"/feedback/{feedback_id}", data)
 
-    async def create_user(self, full_name: str, address: str, tg_id: int, username: str) -> Dict[str, Any]:
+    async def create_user(self, full_name: str, address: str, tg_id: int, username: str, city: str) -> Dict[str, Any]:
         data = {
             "full_name": full_name,
             "address": address,
             "tg_id": tg_id,
-            "username": username
+            "username": username,
+            "city": city
         }
         return await self._request("POST", "/user/", data)
 
@@ -46,7 +47,8 @@ class APIClient:
         return await self._request("GET", f"/user/{user_id}")
 
     async def update_user(self, user_id: int, full_name: Optional[str] = None, address: Optional[str] = None,
-                          tg_id: Optional[int] = None, username: Optional[str] = None) -> Dict[str, Any]:
+                          tg_id: Optional[int] = None, username: Optional[str] = None, city: Optional[str] = None
+                          ) -> Dict[str, Any]:
         data = {}
         if full_name is not None:
             data["full_name"] = full_name
@@ -56,6 +58,8 @@ class APIClient:
             data["tg_id"] = tg_id
         if username is not None:
             data["username"] = username
+        if city is not None:
+            data["city"] = city
         return await self._request("PUT", f"/user/{user_id}", data)
 
     async def delete_user(self, user_id: int) -> Dict[str, Any]:

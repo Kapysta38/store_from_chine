@@ -36,14 +36,15 @@ class OrderHandler(BaseHandler):
             order = await client.create_order(current_user['user_id'], url)
 
             await self.handle(chat_id, state="user",
-                              edit_text=[order['order_id'], current_user['full_name'], "", current_user['address'],
+                              edit_text=[order['order_id'], current_user['full_name'], "",
+                                         f"г. {current_user['city']}, {current_user['address']}",
                                          url])
 
             await client.update_user(current_user['user_id'], username=message.chat.username)
 
             await self.handle(admin_chat,
                               edit_text=[order['order_id'], current_user['full_name'], f"(@{message.chat.username})",
-                                         current_user['address'], url],
+                                         f"г. {current_user['city']}, {current_user['address']}", url],
                               edit_callback=[order['order_id'], order['order_id']])
 
     @staticmethod
@@ -69,7 +70,8 @@ class AcceptOrderHandler(BaseHandler):
                 client = APIClient()
                 order = await client.update_order(int(data), order_status=self.new_state)
                 user = await client.get_user(order['user_id'])
-                template = [order['order_id'], user['full_name'], "", user["address"], order['product_url']]
+                template = [order['order_id'], user['full_name'], "", f"г. {user['city']}, {user['address']}",
+                            order['product_url']]
                 await self.handle(user["tg_id"], edit_text=template)
                 template[2] = f"(@{user['username']})"
                 return template, None

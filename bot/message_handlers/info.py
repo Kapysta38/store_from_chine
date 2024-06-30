@@ -23,7 +23,8 @@ class InfoHandler(BaseHandler):
             if not current_user:
                 return await self.handle(message.chat.id, state=False)
             current_user = current_user[0]
-            return await self.handle(message.chat.id, edit_text=[current_user["full_name"], current_user["address"]])
+            return await self.handle(message.chat.id, edit_text=[current_user["full_name"],
+                                                                 f"г. {current_user['city']}, {current_user['address']}"])
 
     @staticmethod
     async def run_handler(message, state):
